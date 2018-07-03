@@ -78,7 +78,7 @@ public class JewelOpMode extends OpMode
     }
 
     public void initialization(){
-        jewelDetector.init(hardwareMap.appContext, CameraViewDisplay.getInstance());
+        //jewelDetector.init(hardwareMap.appContext, CameraViewDisplay.getInstance());
 
         //Jewel Detector Settings
         jewelDetector.areaWeight = 0.02;

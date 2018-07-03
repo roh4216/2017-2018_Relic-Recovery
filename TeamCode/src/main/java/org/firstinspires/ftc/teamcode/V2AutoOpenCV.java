@@ -1,4 +1,5 @@
 package org.firstinspires.ftc.teamcode;
+import com.disnodeteam.dogecv.CameraViewDisplay;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -26,7 +27,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
  * Created by riseo on 10/28/2017.
  */
 
-@Autonomous(name="V2AutoRecollect", group="OpMode")
+@Autonomous(name="V2AutoOpenCV", group="OpMode")
 //@Disabled
 
 public class V2AutoOpenCV extends LinearOpMode {
@@ -121,7 +122,8 @@ public class V2AutoOpenCV extends LinearOpMode {
     private ElapsedTime pressedtime = new ElapsedTime();
     //above timer used for JD's hopeful glyph jam fix talk to eric for info
 
-    JewelOpMode jewelDetector = new JewelOpMode();
+//    JewelOpMode jewelDetector1 = new JewelOpMode();
+    JewelDetector jewelDetector = new JewelDetector();
 
 
     @Override
@@ -147,7 +149,7 @@ public class V2AutoOpenCV extends LinearOpMode {
 
         beam = hardwareMap.digitalChannel.get("beam");
         touch = hardwareMap.digitalChannel.get("touch2");
-       // touch2 = hardwareMap.digitalChannel.get("touch2");
+        // touch2 = hardwareMap.digitalChannel.get("touch2");
 
         intakeL = hardwareMap.dcMotor.get("ma");
         intakeR =  hardwareMap.dcMotor.get("mb");
@@ -170,7 +172,6 @@ public class V2AutoOpenCV extends LinearOpMode {
         stop = hardwareMap.servo.get("stop");
 
         depleft = hardwareMap.servo.get("depleft");
-
         intakeR.setDirection(DcMotorSimple.Direction.REVERSE);
 
         fr.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -186,6 +187,9 @@ public class V2AutoOpenCV extends LinearOpMode {
         jewel.setPosition(.95);
         relicgrip.setPosition(0.81);
         relicflip.setPosition(0.85);
+
+        jewelDetector.init(hardwareMap.appContext, CameraViewDisplay.getInstance());
+
 
         BNO055IMU.Parameters gyroparameters = new BNO055IMU.Parameters();
         gyroparameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
@@ -283,7 +287,18 @@ public class V2AutoOpenCV extends LinearOpMode {
             }
 
                 relicTrackables.deactivate();
-                jewelDetector.initialization();
+            jewelDetector.areaWeight = 0.02;
+            jewelDetector.detectionMode = org.firstinspires.ftc.teamcode.JewelDetector.JewelDetectionMode.MAX_AREA; // PERFECT_AREA
+            //jewelDetector.perfectArea = 6500; <- Needed for PERFECT_AREA
+            jewelDetector.debugContours = true;
+            jewelDetector.maxDiffrence = 15;
+            jewelDetector.ratioWeight = 15;
+            jewelDetector.minArea = 700;
+
+            jewelDetector.enable();
+            telemetry.addLine("OpenCV Initialized. YAY!!!   :)");
+            telemetry.update();
+
 
             red = (double) color.red();
             blue = (double) color.blue();
@@ -361,27 +376,38 @@ public class V2AutoOpenCV extends LinearOpMode {
 
 
                         switch (jewelDetector.getCurrentOrder()){
-                            case "RED_BLUE":
+                            case RED_BLUE:
                                 flick.setPosition(0.1);
-                            case "BLUE_RED":
+                                telemetry.addLine("Red Blue");
+                                telemetry.update();
+                                break;
+
+                            case BLUE_RED:
                                 flick.setPosition(0.75);
-                            case "UNKNOWN":
+                                telemetry.addLine("Blue Red");
+                                telemetry.update();
+                                break;
+
+                            case UNKNOWN:
+                                telemetry.addLine("Unknown");
+                                telemetry.update();
                                 if(bluetored > 1.2){
                                 flick.setPosition(0.75);
-                                case_switch = 2;
-                            }
-                            //go to right
-                            else if(redtoblue > 1.2){
+                                //case_switch = 2;
+                                }
+                                //go to right
+                                else if(redtoblue > 1.2){
                                 flick.setPosition(0.1);
-                                case_switch = 2;
+                               // case_switch = 2;
                             }
 
+                            break;
                             }
 
 
                         if(runtime.seconds() > 3){
                             jewel.setPosition(.95);
-                            case_switch = 2;
+                            //case_switch = 2;
                         }
 
 
