@@ -225,7 +225,7 @@ public class V2Drive extends OpMode {
 
         if(gamepad1.left_stick_button){
            // intakePower = 0.8;
-            intakePower = .65;
+            intakePower = .6;
         } //was .9, changed to avoid jams
 
         if(gamepad1.right_stick_button){

@@ -12,6 +12,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import java.io.IOException;
+import com.disnodeteam.dogecv.detectors.JewelDetector;
 
 
 @Autonomous(name="DogeCV Jewel Detector1", group="DogeCV")
@@ -61,7 +62,7 @@ public class JewelOpMode extends OpMode
     @Override
     public void loop() {
 
-jewelDetector.getCurrentOrder();
+        jewelDetector.getCurrentOrder();
 
         telemetry.addData("Status", "Run Time: " + runtime.toString());
 
@@ -70,9 +71,31 @@ jewelDetector.getCurrentOrder();
 
     }
 
+
     @Override
     public void stop() {
         jewelDetector.disable();
     }
+
+    public void initialization(){
+        jewelDetector.init(hardwareMap.appContext, CameraViewDisplay.getInstance());
+
+        //Jewel Detector Settings
+        jewelDetector.areaWeight = 0.02;
+        jewelDetector.detectionMode = JewelDetector.JewelDetectionMode.MAX_AREA; // PERFECT_AREA
+        //jewelDetector.perfectArea = 6500; <- Needed for PERFECT_AREA
+        jewelDetector.debugContours = true;
+        jewelDetector.maxDiffrence = 15;
+        jewelDetector.ratioWeight = 15;
+        jewelDetector.minArea = 700;
+
+        jewelDetector.enable();
+        telemetry.addLine("OpenCV Initialized. YAY!!!   :)");
+        telemetry.update();
+    }
+    public String getCurrentOrder(){
+        return jewelDetector.getCurrentOrder().toString();
+    }
+
 
 }

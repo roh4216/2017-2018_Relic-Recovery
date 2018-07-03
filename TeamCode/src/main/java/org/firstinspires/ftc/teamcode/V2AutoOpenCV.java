@@ -1,14 +1,11 @@
 package org.firstinspires.ftc.teamcode;
-import com.disnodeteam.dogecv.detectors.JewelDetector;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
-import com.qualcomm.robotcore.hardware.OpticalDistanceSensor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
@@ -24,6 +21,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 
+
 /**
  * Created by riseo on 10/28/2017.
  */
@@ -31,9 +29,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 @Autonomous(name="V2AutoRecollect", group="OpMode")
 //@Disabled
 
-public class V2AutoRecollect extends LinearOpMode {
-
-    private JewelDetector jewelDetector = null;
+public class V2AutoOpenCV extends LinearOpMode {
 
     VuforiaLocalizer vuforia;
 
@@ -119,11 +115,13 @@ public class V2AutoRecollect extends LinearOpMode {
   //  int touchcount2 = 0;
 
 
+
     private ElapsedTime runtime = new ElapsedTime();
     private ElapsedTime intaketimer = new ElapsedTime();
     private ElapsedTime pressedtime = new ElapsedTime();
     //above timer used for JD's hopeful glyph jam fix talk to eric for info
 
+    JewelOpMode jewelDetector = new JewelOpMode();
 
 
     @Override
@@ -284,6 +282,9 @@ public class V2AutoRecollect extends LinearOpMode {
                 targetColumn = 0;
             }
 
+                relicTrackables.deactivate();
+                jewelDetector.initialization();
+
             red = (double) color.red();
             blue = (double) color.blue();
 
@@ -330,30 +331,53 @@ public class V2AutoRecollect extends LinearOpMode {
 
                     case 1:
 
-                        if(runtime.seconds() > 0.8){
+//                        if(runtime.seconds() > 0.8){
+//
+//                            //go to left
+//                            if(bluetored > 1.2){
+//                                flick.setPosition(0.75);
+//                                case_switch = 2;
+//                            }
+//
+//                            //go to right
+//                            else if(redtoblue > 1.2){
+//                                flick.setPosition(0.1);
+//                                case_switch = 2;
+//                            }
+//
+//                            if(runtime.seconds() > 2){
+//                                flick.setPosition(0.42);
+//
+//                                if(bluetored > 1.2){
+//                                    flick.setPosition(0.75);
+//                                    case_switch = 2;
+//                                }
+//                                else if(redtoblue > 1.2){
+//                                    flick.setPosition(0.1);
+//                                    case_switch = 2;
+//                                }
+//                            }
+//                        }
 
-                            if(bluetored > 1.2){
+
+                        switch (jewelDetector.getCurrentOrder()){
+                            case "RED_BLUE":
+                                flick.setPosition(0.1);
+                            case "BLUE_RED":
+                                flick.setPosition(0.75);
+                            case "UNKNOWN":
+                                if(bluetored > 1.2){
                                 flick.setPosition(0.75);
                                 case_switch = 2;
                             }
+                            //go to right
                             else if(redtoblue > 1.2){
                                 flick.setPosition(0.1);
                                 case_switch = 2;
                             }
 
-                            if(runtime.seconds() > 2){
-                                flick.setPosition(0.42);
-
-                                if(bluetored > 1.2){
-                                    flick.setPosition(0.75);
-                                    case_switch = 2;
-                                }
-                                else if(redtoblue > 1.2){
-                                    flick.setPosition(0.1);
-                                    case_switch = 2;
-                                }
                             }
-                        }
+
 
                         if(runtime.seconds() > 3){
                             jewel.setPosition(.95);

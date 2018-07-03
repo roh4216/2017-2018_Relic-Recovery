@@ -123,7 +123,7 @@ public class V2DriveNoFlip extends OpMode {
         fr.setDirection(DcMotorSimple.Direction.REVERSE);
         bl.setDirection(DcMotorSimple.Direction.REVERSE);
 
-        jewel.setPosition(1);
+        jewel.setPosition(.95); // was 1
         flick.setPosition(0.1);
       //  flip.setPosition(0.25);
         //flipL.setPosition(0.2);
