@@ -28,7 +28,7 @@ public class JacksonDriveNoFlip extends OpMode {
 
     //Servo flipL;
    // Servo flipR;
-    Servo flip;
+   // Servo flip;
 
     Servo flick;
 
@@ -74,9 +74,13 @@ public class JacksonDriveNoFlip extends OpMode {
 
     boolean stoppable = true;
 
+    boolean intakeOn = false;
+
     double intakePower = 0;
 
     private ElapsedTime runtime = new ElapsedTime();
+    private ElapsedTime intaketimer = new ElapsedTime();
+
 
     public JacksonDriveNoFlip() {
     }
@@ -100,7 +104,7 @@ public class JacksonDriveNoFlip extends OpMode {
 
         //flipL = hardwareMap.servo.get("sa");
        // flipR = hardwareMap.servo.get("sb");
-        flip = hardwareMap.servo.get("sa");
+       // flip = hardwareMap.servo.get("sa");
 
         flick = hardwareMap.servo.get("sc");
 
@@ -121,7 +125,7 @@ public class JacksonDriveNoFlip extends OpMode {
 
         jewel.setPosition(1);
         flick.setPosition(0.1);
-        flip.setPosition(0.25);
+        //flip.setPosition(0.25);
         //flipL.setPosition(0.2);
         //flipR.setPosition(0.8);
         grip.setPosition(0.7);
@@ -203,23 +207,46 @@ public class JacksonDriveNoFlip extends OpMode {
         if(gamepad1.right_stick_button) {
             depleft.setPosition(0.535);
         }
-        if(gamepad1.left_trigger < 0.01 && gamepad1.right_trigger <0.01){
+        if(gamepad1.left_trigger < 0.01 && gamepad1.right_trigger < 0.01){
         //    depleft.setPower(0);
           //  depright.setPower(0);
         }
-
-        if(gamepad1.left_trigger >= 0.01){
-            intakePower  = -1;
+//
+//        if(gamepad1.right_trigger >= 0.6 && intakeOn == false && intaketimer.seconds() > 0.2){
+//            // intakePower = 0.8;
+//            intakeOn = true;
+//            intakePower = .6;
+//            runtime.reset();
+//        } //was .9, changed to avoid jams
+//
+//        else if (gamepad1.right_trigger > 0.6 && intakeOn == true && intaketimer.seconds() > 0.2) {
+//            intakePower = 0;
+//            intakeOn = false;
+//            runtime.reset();
+//        }
+//
+//        if(gamepad1.left_trigger > 0.6 && intakeOn == false && intaketimer.seconds() > 0.2){
+//            intakePower = -0.6;
+//            intakeOn = true;
+//            runtime.reset();
+//        }
+//
+//        else if (gamepad1. left_trigger > 0.6 && intakeOn == true && intaketimer.seconds() > 0.2) {
+//            intakePower = 0;
+//            intakeOn = false;
+//            runtime.reset();
+//
+//        }
+        if (gamepad1.left_trigger>0){
+            intakePower = -0.6;
         }
-
-        if(gamepad1.right_trigger >= 0.01){
-           // intakePower = 0.8;
-            intakePower = .6;
-        } //was .9, changed to avoid jams
-
-        if(gamepad1.b){
+        else if (gamepad1.right_trigger>0){
+            intakePower = 0.6;
+        }
+        else if (gamepad1.b){
             intakePower = 0;
         }
+
 
 
         if(gamepad1.a && !apressed){
@@ -249,7 +276,7 @@ public class JacksonDriveNoFlip extends OpMode {
         if(gamepad2.dpad_up){
           //  flipL.setPosition(0.81);
           //  flipR.setPosition(0.19);
-            flip.setPosition(0.865);
+           // flip.setPosition(0.865);
 
             //posL = 0.81;
             //posR = 0.19;
@@ -259,7 +286,7 @@ public class JacksonDriveNoFlip extends OpMode {
         if(gamepad2.dpad_down){
            // flipL.setPosition(0.2);
            // flipR.setPosition(0.8);
-            flip.setPosition(0.25);
+           // flip.setPosition(0.25);
 
             //posL = 0.13;
             //posR = 0.8;
@@ -332,7 +359,7 @@ public class JacksonDriveNoFlip extends OpMode {
 
         //telemetry.addData("LeftServo: ", flipL.getPosition());
         //telemetry.addData("RightServo: ", flipR.getPosition());
-        telemetry.addData("FlipServo: ", flip.getPosition());
+       // telemetry.addData("FlipServo: ", flip.getPosition());
 
         telemetry.addData("posL: ", posL);
         telemetry.addData("posR: ", posR);

@@ -79,6 +79,7 @@ public class JacksonDrive extends OpMode {
     double intakePower = 0;
 
     private ElapsedTime runtime = new ElapsedTime();
+    private ElapsedTime intaketimer = new ElapsedTime();
 
     public JacksonDrive() {
     }
@@ -205,32 +206,22 @@ public class JacksonDrive extends OpMode {
         if(gamepad1.right_stick_button) {
             depleft.setPosition(0.535);
         }
-        if(gamepad1.left_trigger < 0.01 && gamepad1.right_trigger <0.01){
+        if(gamepad1.left_trigger < 0.01 && gamepad1.right_trigger < 0.01){
         //    depleft.setPower(0);
           //  depright.setPower(0);
         }
 
-
-        if(gamepad1.right_trigger >= 0.01 && intakeOn == false){
-           // intakePower = 0.8;
-            intakeOn = true;
-            intakePower = .6;
-        } //was .9, changed to avoid jams
-
-        else if (gamepad1.right_trigger > 0.01 && intakeOn == true) {
-            intakePower = 0;
-            intakeOn = false;
-        }
-
-        if(gamepad1.left_trigger > 0.01 && intakeOn == false){
+        if (gamepad1.left_trigger>0){
             intakePower = -0.6;
-            intakeOn = true;
+        }
+        else if (gamepad1.right_trigger>0){
+            intakePower = 0.6;
+        }
+        else if (gamepad1.b){
+            intakePower = 0;
         }
 
-        else if (gamepad1. left_trigger > 0.01 && intakeOn == true){
-            intakePower = 0;
-            intakeOn = false;
-        }
+
         if(gamepad1.a && !apressed){
             intakePower -= .1;
             apressed = true;
