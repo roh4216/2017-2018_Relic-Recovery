@@ -285,7 +285,7 @@ public class V2Drive extends OpMode {
             grippos = .18; //for rev .22
         }
         if(gamepad2.left_bumper){
-            grippos = 0.67; // for rev .7
+            grippos = 0.75; // for rev .7
         }
 
         if(gamepad2.y){

@@ -1,22 +1,18 @@
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
-import com.disnodeteam.dogecv.CameraViewDisplay;
-import com.disnodeteam.dogecv.detectors.*;
 
-@TeleOp(name="V2DriveNoFlip", group="OpMode")
+@TeleOp(name="JacksonDrive", group="OpMode")
 //@Disabled
 
-public class V2DriveNoFlip extends OpMode {
+public class JacksonDrive extends OpMode {
 
     //limit switch thing
     DigitalChannel touch;
@@ -31,8 +27,8 @@ public class V2DriveNoFlip extends OpMode {
     DcMotor br;
 
     //Servo flipL;
-    // Servo flipR;
-   // Servo flip;
+   // Servo flipR;
+    Servo flip;
 
     Servo flick;
 
@@ -82,7 +78,7 @@ public class V2DriveNoFlip extends OpMode {
 
     private ElapsedTime runtime = new ElapsedTime();
 
-    public V2DriveNoFlip() {
+    public JacksonDrive() {
     }
 
     @Override
@@ -103,8 +99,8 @@ public class V2DriveNoFlip extends OpMode {
         br = hardwareMap.dcMotor.get("mh");
 
         //flipL = hardwareMap.servo.get("sa");
-        // flipR = hardwareMap.servo.get("sb");
-       // flip = hardwareMap.servo.get("sa");
+       // flipR = hardwareMap.servo.get("sb");
+        flip = hardwareMap.servo.get("sa");
 
         flick = hardwareMap.servo.get("sc");
 
@@ -123,14 +119,14 @@ public class V2DriveNoFlip extends OpMode {
         fr.setDirection(DcMotorSimple.Direction.REVERSE);
         bl.setDirection(DcMotorSimple.Direction.REVERSE);
 
-        jewel.setPosition(.95); // was 1
+        jewel.setPosition(1);
         flick.setPosition(0.1);
-      //  flip.setPosition(0.25);
+        flip.setPosition(0.25);
         //flipL.setPosition(0.2);
         //flipR.setPosition(0.8);
         grip.setPosition(0.7);
-        // relicgrip.setPosition(0.4); // rev is .4
-        // relicflip.setPosition(0.7);
+       // relicgrip.setPosition(0.4); // rev is .4
+       // relicflip.setPosition(0.7);
         stop.setPosition(0);
         depleft.setPosition(.535);
 
@@ -174,7 +170,7 @@ public class V2DriveNoFlip extends OpMode {
         }
 
         //slow mode
-        if(gamepad1.dpad_down){
+        if(gamepad1.dpad_left){
             drivefactor = 3;
         }
 
@@ -200,28 +196,28 @@ public class V2DriveNoFlip extends OpMode {
 
         intakePower = Range.clip(intakePower, -1,1);
 
-        if(gamepad1.left_trigger >= 0.01) {
+        if(gamepad1.left_stick_button) {
             depleft.setPosition(0.175);
         }
 
-        if(gamepad1.right_trigger >= 0.01) {
+        if(gamepad1.right_stick_button) {
             depleft.setPosition(0.535);
         }
         if(gamepad1.left_trigger < 0.01 && gamepad1.right_trigger <0.01){
-            //    depleft.setPower(0);
-            //  depright.setPower(0);
+        //    depleft.setPower(0);
+          //  depright.setPower(0);
         }
 
         if(gamepad1.b){
             intakePower  = -1;
         }
 
-        if(gamepad1.left_stick_button){
-            // intakePower = 0.8;
-            intakePower = .65;
+        if(gamepad1.right_trigger >= 0.01){
+           // intakePower = 0.8;
+            intakePower = .6;
         } //was .9, changed to avoid jams
 
-        if(gamepad1.right_stick_button){
+        if(gamepad1.left_trigger > 0.01){
             intakePower = 0;
         }
 
@@ -251,9 +247,9 @@ public class V2DriveNoFlip extends OpMode {
         }
 
         if(gamepad2.dpad_up){
-            //  flipL.setPosition(0.81);
-            //  flipR.setPosition(0.19);
-        //    flip.setPosition(0.865);
+          //  flipL.setPosition(0.81);
+          //  flipR.setPosition(0.19);
+            flip.setPosition(0.865);
 
             //posL = 0.81;
             //posR = 0.19;
@@ -261,9 +257,9 @@ public class V2DriveNoFlip extends OpMode {
         }
 
         if(gamepad2.dpad_down){
-            // flipL.setPosition(0.2);
-            // flipR.setPosition(0.8);
-         //   flip.setPosition(0.25);
+           // flipL.setPosition(0.2);
+           // flipR.setPosition(0.8);
+            flip.setPosition(0.25);
 
             //posL = 0.13;
             //posR = 0.8;
@@ -292,7 +288,7 @@ public class V2DriveNoFlip extends OpMode {
         }
 
         if(gamepad2.b){
-            // relicgrip.setPosition(0);
+           // relicgrip.setPosition(0);
             relicgrip.setPosition(0.4);
 
         }
@@ -336,7 +332,7 @@ public class V2DriveNoFlip extends OpMode {
 
         //telemetry.addData("LeftServo: ", flipL.getPosition());
         //telemetry.addData("RightServo: ", flipR.getPosition());
-     //   telemetry.addData("FlipServo: ", flip.getPosition());
+        telemetry.addData("FlipServo: ", flip.getPosition());
 
         telemetry.addData("posL: ", posL);
         telemetry.addData("posR: ", posR);

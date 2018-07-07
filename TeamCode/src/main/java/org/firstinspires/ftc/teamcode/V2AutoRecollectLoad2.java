@@ -1,5 +1,5 @@
 package org.firstinspires.ftc.teamcode;
-import com.disnodeteam.dogecv.CameraViewDisplay;
+import com.disnodeteam.dogecv.detectors.JewelDetector;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -22,15 +22,16 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 
-
 /**
  * Created by riseo on 10/28/2017.
  */
 
-@Autonomous(name="V2AutoOpenCV", group="OpMode")
+@Autonomous(name="V2AutoRecollectLoad2", group="OpMode")
 //@Disabled
 
-public class V2AutoOpenCV extends LinearOpMode {
+public class V2AutoRecollectLoad2 extends LinearOpMode {
+
+    private JewelDetector jewelDetector = null;
 
     VuforiaLocalizer vuforia;
 
@@ -116,14 +117,11 @@ public class V2AutoOpenCV extends LinearOpMode {
   //  int touchcount2 = 0;
 
 
-
     private ElapsedTime runtime = new ElapsedTime();
     private ElapsedTime intaketimer = new ElapsedTime();
     private ElapsedTime pressedtime = new ElapsedTime();
     //above timer used for JD's hopeful glyph jam fix talk to eric for info
 
-//    JewelOpMode jewelDetector1 = new JewelOpMode();
-    JewelDetector jewelDetector = new JewelDetector();
 
 
     @Override
@@ -149,7 +147,7 @@ public class V2AutoOpenCV extends LinearOpMode {
 
         beam = hardwareMap.digitalChannel.get("beam");
         touch = hardwareMap.digitalChannel.get("touch2");
-        // touch2 = hardwareMap.digitalChannel.get("touch2");
+       // touch2 = hardwareMap.digitalChannel.get("touch2");
 
         intakeL = hardwareMap.dcMotor.get("ma");
         intakeR =  hardwareMap.dcMotor.get("mb");
@@ -172,6 +170,7 @@ public class V2AutoOpenCV extends LinearOpMode {
         stop = hardwareMap.servo.get("stop");
 
         depleft = hardwareMap.servo.get("depleft");
+
         intakeR.setDirection(DcMotorSimple.Direction.REVERSE);
 
         fr.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -187,9 +186,6 @@ public class V2AutoOpenCV extends LinearOpMode {
         jewel.setPosition(.95);
         relicgrip.setPosition(0.81);
         relicflip.setPosition(0.85);
-
-        jewelDetector.init(hardwareMap.appContext, CameraViewDisplay.getInstance());
-
 
         BNO055IMU.Parameters gyroparameters = new BNO055IMU.Parameters();
         gyroparameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
@@ -286,20 +282,6 @@ public class V2AutoOpenCV extends LinearOpMode {
                 targetColumn = 0;
             }
 
-                relicTrackables.deactivate();
-            jewelDetector.areaWeight = 0.02;
-            jewelDetector.detectionMode = org.firstinspires.ftc.teamcode.JewelDetector.JewelDetectionMode.MAX_AREA; // PERFECT_AREA
-            //jewelDetector.perfectArea = 6500; <- Needed for PERFECT_AREA
-            jewelDetector.debugContours = true;
-            jewelDetector.maxDiffrence = 15;
-            jewelDetector.ratioWeight = 15;
-            jewelDetector.minArea = 700;
-
-            jewelDetector.enable();
-            telemetry.addLine("OpenCV Initialized. YAY!!!   :)");
-            telemetry.update();
-
-
             red = (double) color.red();
             blue = (double) color.blue();
 
@@ -346,71 +328,34 @@ public class V2AutoOpenCV extends LinearOpMode {
 
                     case 1:
 
-//                        if(runtime.seconds() > 0.8){
-//
-//                            //go to left
-//                            if(bluetored > 1.2){
-//                                flick.setPosition(0.75);
-//                                case_switch = 2;
-//                            }
-//
-//                            //go to right
-//                            else if(redtoblue > 1.2){
-//                                flick.setPosition(0.1);
-//                                case_switch = 2;
-//                            }
-//
-//                            if(runtime.seconds() > 2){
-//                                flick.setPosition(0.42);
-//
-//                                if(bluetored > 1.2){
-//                                    flick.setPosition(0.75);
-//                                    case_switch = 2;
-//                                }
-//                                else if(redtoblue > 1.2){
-//                                    flick.setPosition(0.1);
-//                                    case_switch = 2;
-//                                }
-//                            }
-//                        }
+                        if(runtime.seconds() > 0.8){
 
-
-                        switch (jewelDetector.getCurrentOrder()){
-                            case RED_BLUE:
-                                flick.setPosition(0.1);
-                                telemetry.addLine("Red Blue");
-                                telemetry.update();
-                                break;
-
-                            case BLUE_RED:
+                            if(bluetored > 1.2){
                                 flick.setPosition(0.75);
-                                telemetry.addLine("Blue Red");
-                                telemetry.update();
-                                break;
+                                case_switch = 2;
+                            }
+                            else if(redtoblue > 1.2){
+                                flick.setPosition(0.1);
+                                case_switch = 2;
+                            }
 
-                            case UNKNOWN:
-                                telemetry.addLine("Unknown");
-                                telemetry.update();
+                            if(runtime.seconds() > 2){
+                                flick.setPosition(0.42);
+
                                 if(bluetored > 1.2){
-                                flick.setPosition(0.75);
-                                //case_switch = 2;
+                                    flick.setPosition(0.75);
+                                    case_switch = 2;
                                 }
-                                //go to right
                                 else if(redtoblue > 1.2){
-                                flick.setPosition(0.1);
-                               // case_switch = 2;
+                                    flick.setPosition(0.1);
+                                    case_switch = 2;
+                                }
                             }
-
-                            telemetry.update();
-
-
-                                break;
-                            }
-
+                        }
 
                         if(runtime.seconds() > 3){
                             jewel.setPosition(.95);
-                            //case_switch = 2;
+                            case_switch = 2;
                         }
 
 
@@ -899,6 +844,8 @@ public class V2AutoOpenCV extends LinearOpMode {
 
                 case 101:
 
+                    grip.setPosition(0.75);
+
                     if(runtime.seconds() > 0.8){
 
                         if(bluetored > 1.2){
@@ -934,13 +881,10 @@ public class V2AutoOpenCV extends LinearOpMode {
 
                 case 102:
 
-
                     //pivot to target angle and read vuforia
-
 
                     jewel.setPosition(.95);
                     flick.setPosition(0.1);
-
 
                     //right
                     if(targetColumn == 3){
@@ -962,17 +906,25 @@ public class V2AutoOpenCV extends LinearOpMode {
                         left = true;
                     }
 
-
+                    runtime.reset();
                     case_switch = 103;
-
 
                     break;
 
                 case 103:
 
+                    intakeL.setPower(0.9);
+                    intakeR.setPower(0.9);
+
                     CameraDevice.getInstance().setFlashTorchMode(false);
 
                     //turn to 90 degrees + retract servo
+
+                    if(runtime.seconds() > 1.5){
+                        intakeL.setPower(0);
+                        intakeR.setPower(0);
+                        grip.setPosition(0.18);
+                    }
 
                     gyroTurn(90, 2);
 
@@ -987,6 +939,12 @@ public class V2AutoOpenCV extends LinearOpMode {
                 case 104:
 
                     //drive specific encoder count to l, c, or r column depending on what was last seen by vuforia
+
+                    if(runtime.seconds() > 1.5){
+                        intakeL.setPower(0);
+                        intakeR.setPower(0);
+                        grip.setPosition(0.18);
+                    }
 
                     Scurve(encoderTarget, 0.8, 20);
 
