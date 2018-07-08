@@ -27,7 +27,7 @@ public class Pixy2Test extends LinearOpMode {
     I2cDevice pixyCam;
         I2cDeviceSynchImpl pixyCamReader;
         I2cAddr pixyCamAddress = I2cAddr.create8bit(0x01);
-        Servo pan, tilt;
+       // Servo pan, tilt;
 
         double x, y, width, height, numObjs;
 
@@ -36,12 +36,12 @@ public class Pixy2Test extends LinearOpMode {
         @Override
         public void runOpMode() throws InterruptedException {
 
-            pan = hardwareMap.servo.get("pan");
-            tilt = hardwareMap.servo.get("tilt");
+//            pan = hardwareMap.servo.get("pan");
+//            tilt = hardwareMap.servo.get("tilt");
 
             double xServo = 0.5, yServo = 0.5;
-            pan.setPosition(xServo);
-            tilt.setPosition(yServo);
+//            pan.setPosition(xServo);
+//            tilt.setPosition(yServo);
 
             pixyCam = hardwareMap.i2cDevice.get("pixy");
             pixyCamReader = new I2cDeviceSynchImpl(pixyCam, pixyCamAddress, false);
@@ -52,8 +52,8 @@ public class Pixy2Test extends LinearOpMode {
             while(opModeIsActive()){
                 pixyCamReader.engage();
                 pixyData = pixyCamReader.read(0x51, 5);
-                pan.setPosition(xServo);
-                tilt.setPosition(yServo);
+//                pan.setPosition(xServo);
+//                tilt.setPosition(yServo);
 
                 x = pixyData[1];
                 y = pixyData[2];
