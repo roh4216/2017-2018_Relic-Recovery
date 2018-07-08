@@ -16,15 +16,13 @@ import com.qualcomm.robotcore.hardware.Servo;
 @Autonomous(name = "Pixy", group = "Sensor")
 public class PixyTest extends LinearOpMode {
     I2cDeviceSynch pixy;
-    Servo arm;
-    Servo flicc;
+
     //our Pixy device
     @Override
     public void runOpMode() throws InterruptedException {
         //setting up Pixy to the hardware map
         pixy = hardwareMap.i2cDeviceSynch.get("pixy");
-        arm = hardwareMap.servo.get("sa");
-        flicc = hardwareMap.servo.get("sb");
+
 
         //setting Pixy's I2C Address
         pixy.setI2cAddress(I2cAddr.create7bit(0x54));

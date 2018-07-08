@@ -49,12 +49,12 @@ public class Pixy2Test extends LinearOpMode {
 
             waitForStart();
 
+
             while(opModeIsActive()){
                 pixyCamReader.engage();
                 pixyData = pixyCamReader.read(0x51, 5);
 //                pan.setPosition(xServo);
 //                tilt.setPosition(yServo);
-
                 x = pixyData[1];
                 y = pixyData[2];
                 numObjs = pixyData[0];
