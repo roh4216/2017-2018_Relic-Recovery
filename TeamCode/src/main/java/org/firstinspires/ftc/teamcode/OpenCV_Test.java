@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode;
 
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
@@ -24,6 +25,7 @@ import org.opencv.highgui.Highgui;
  */
 
 @Autonomous(name= "OpenCV_Test", group = "OpenCV")
+@Disabled
 
 public abstract class OpenCV_Test extends OpMode{
 //    public int n_rows = 100;

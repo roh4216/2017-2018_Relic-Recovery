@@ -153,7 +153,9 @@ public class V2Drive extends OpMode {
 
     @Override
     public void start(){
+
         relicflip.setPosition(0.85);
+
     }
 
     @Override

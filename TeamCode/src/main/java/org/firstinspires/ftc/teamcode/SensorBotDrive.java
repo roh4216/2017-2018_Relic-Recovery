@@ -2,9 +2,9 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
@@ -14,6 +14,14 @@ import com.qualcomm.robotcore.util.Range;
 
 public class SensorBotDrive extends OpMode {
 
+    private static final double VCC = 3.3;
+    private static final double VI = VCC/512;
+
+    private double RM = 0;
+    private double RI = 0;
+
+    private double lightnum;
+
     //limit switch thing
 
     DcMotor fl;
@@ -21,10 +29,20 @@ public class SensorBotDrive extends OpMode {
     DcMotor bl;
     DcMotor br;
 
-    float leftdrive;
-    float rightdrive;
+    Servo blinkin;
 
-    float drivefactor = 1;
+    private AnalogInput ultra;
+
+    private AnalogInput flex;
+
+    private AnalogInput squeeze;
+
+    private float leftdrive;
+    private float rightdrive;
+
+    private double rawvoltage;
+
+    private float drivefactor = 1;
 
     private ElapsedTime runtime = new ElapsedTime();
 
@@ -38,6 +56,12 @@ public class SensorBotDrive extends OpMode {
         fr = hardwareMap.dcMotor.get("fr");
         bl = hardwareMap.dcMotor.get("bl");
         br = hardwareMap.dcMotor.get("br");
+
+        blinkin = hardwareMap.servo.get("blinkin");
+
+        ultra = hardwareMap.analogInput.get("ultra");
+        flex = hardwareMap.analogInput.get("flex");
+        squeeze = hardwareMap.analogInput.get("squeeze");
 
         fl.setDirection(DcMotorSimple.Direction.REVERSE);
         br.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -61,6 +85,39 @@ public class SensorBotDrive extends OpMode {
     @Override
     public void loop() {
 
+        rawvoltage = ultra.getVoltage();
+
+        //mm calculations
+
+        RM = 5 * (rawvoltage / VI);
+
+        //inches calculations
+
+        RI = RM * 0.0394;
+
+        lightnum = flex.getVoltage();
+
+        if (lightnum >= 1.0){
+            blinkin.setPosition(0.93);
+        } else if (lightnum == 0) {
+            blinkin.setPosition(0.01);
+        }
+
+        if (gamepad1.right_bumper && lightnum == 0) {
+            blinkin.setPosition(0.61);
+        }
+
+        telemetry.addData("Raw Voltage: ", rawvoltage);
+        telemetry.addData("Inches: ", RI);
+        telemetry.addData("Millimeters: ", RM);
+
+        telemetry.addData("Flex: ", flex.getVoltage());
+
+        telemetry.addData("Pressure: ", squeeze.getVoltage());
+
+
+
+/*
         //fast mode
         if(gamepad1.left_bumper){
             drivefactor = 1;
@@ -88,7 +145,7 @@ public class SensorBotDrive extends OpMode {
         fr.setPower(rightdrive);
         br.setPower(rightdrive);
 
-
+*/
         telemetry.update();
 
 

@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 //hi
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.I2cAddr;
@@ -14,6 +15,7 @@ import com.qualcomm.robotcore.hardware.Servo;
  * Created by Michael on 6/6/2017.
  */
 @Autonomous(name = "Pixy", group = "Sensor")
+@Disabled
 public class PixyTest extends LinearOpMode {
     I2cDeviceSynch pixy;
 

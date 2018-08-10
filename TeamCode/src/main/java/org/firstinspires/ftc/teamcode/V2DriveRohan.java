@@ -9,10 +9,10 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
-@TeleOp(name="JacksonDrive", group="OpMode")
+@TeleOp(name="V2DriveRohan", group="OpMode")
 //@Disabled
 
-public class JacksonDrive extends OpMode {
+public class V2DriveRohan extends OpMode {
 
     //limit switch thing
     DigitalChannel touch;
@@ -74,14 +74,11 @@ public class JacksonDrive extends OpMode {
 
     boolean stoppable = true;
 
-    boolean intakeOn = false;
-
     double intakePower = 0;
 
     private ElapsedTime runtime = new ElapsedTime();
-    private ElapsedTime intaketimer = new ElapsedTime();
 
-    public JacksonDrive() {
+    public V2DriveRohan() {
     }
 
     @Override
@@ -128,11 +125,16 @@ public class JacksonDrive extends OpMode {
         //flipL.setPosition(0.2);
         //flipR.setPosition(0.8);
         grip.setPosition(0.7);
-        relicgrip.setPosition(0.805);
-        // relicflip.setPosition(0.7);
+       // relicgrip.setPosition(0.4); // rev is .4
+       // relicflip.setPosition(0.7);
         stop.setPosition(0);
         depleft.setPosition(.535);
 
+
+        fl.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        fr.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        bl.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        br.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         lift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         extendo.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -173,7 +175,7 @@ public class JacksonDrive extends OpMode {
         }
 
         //slow mode
-        if(gamepad1.dpad_left){
+        if(gamepad1.dpad_down){
             drivefactor = 3;
         }
 
@@ -199,25 +201,28 @@ public class JacksonDrive extends OpMode {
 
         intakePower = Range.clip(intakePower, -1,1);
 
-        if(gamepad1.left_stick_button) {
+        if(gamepad1.left_trigger >= 0.01) {
             depleft.setPosition(0.175);
         }
 
-        if(gamepad1.right_stick_button) {
+        if(gamepad1.right_trigger >= 0.01) {
             depleft.setPosition(0.535);
         }
-        if(gamepad1.left_trigger < 0.01 && gamepad1.right_trigger < 0.01){
+        if(gamepad1.left_trigger < 0.01 && gamepad1.right_trigger <0.01){
         //    depleft.setPower(0);
           //  depright.setPower(0);
         }
 
-        if (gamepad1.left_trigger>0){
-            intakePower = -0.6;
+        if(gamepad1.b){
+            intakePower  = -1;
         }
-        else if (gamepad1.right_trigger>0){
-            intakePower = 0.6;
-        }
-        else if (gamepad1.b){
+
+        if(gamepad1.left_stick_button){
+           // intakePower = 0.8;
+            intakePower = .6;
+        } //was .9, changed to avoid jams
+
+        if(gamepad1.right_stick_button){
             intakePower = 0;
         }
 
@@ -229,7 +234,7 @@ public class JacksonDrive extends OpMode {
         else if(!gamepad1.a) {
             apressed = false;
         }
-        else if(gamepad1.y && !ypressed){
+        if(gamepad1.y && !ypressed){
             intakePower += 0.1;
             ypressed = true;
         }

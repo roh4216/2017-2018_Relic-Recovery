@@ -581,6 +581,13 @@ public class V2AutoRecollect extends LinearOpMode {
                         case_switch = 11;
                     }
 
+                    else if(runtime.seconds() > 3){
+                        Drive(0);
+                        startpos = currentpos;
+                        runtime.reset();
+                        case_switch = 11;
+                    }
+
                     break;
 
                 case 11:
@@ -1105,8 +1112,8 @@ public class V2AutoRecollect extends LinearOpMode {
                         grip.setPosition(0.22);
                     }*/
 
-                    ScurveMed(1300, -0.9, 20, startpos);
-                    if(currentpos < 1300 + 20){
+                    ScurveMed(1150, -0.9, 20, startpos);
+                    if(currentpos < 1150 + 20){
                         Drive(0);
                         resetDriveEncoders();
                         intakeL.setPower(0);
@@ -1119,12 +1126,12 @@ public class V2AutoRecollect extends LinearOpMode {
 
                 case 112:
 
-                    gyroDrive(33, -0.2);
+                    gyroDrive(31, -0.2);
 
                     intakeL.setPower(0);
                     intakeR.setPower(0);
 
-                    if(currentpos < -350){
+                    if(currentpos < -450){
                         Drive(0);
                         intakeL.setPower(0);
                         intakeR.setPower(0);
@@ -1333,7 +1340,7 @@ public class V2AutoRecollect extends LinearOpMode {
 
                     flip.setPosition(0.25);
                     Drive(-0.4);
-                    sleep(900);
+                    sleep(1000);
 
                     Drive(0.4);
                     sleep(150);
@@ -2801,7 +2808,7 @@ public class V2AutoRecollect extends LinearOpMode {
 
         double baseTurnPowerFactor = 0.004;
         //MIN Power to have when turning so the robot does keep moving - this gets determined by trial and error
-        double baseTurnPowerMin = 0.04;
+        double baseTurnPowerMin = 0.05;
 
         double driveSteering;
 
