@@ -161,6 +161,7 @@ public class SensorBotDrive extends OpMode {
 
         //If none of the conditions above are met, it sets blinkin to 0.7475 which should be white but looks more purple
 
+        //Test
         else{
             blinkin.setPosition(0.7475);
         }
