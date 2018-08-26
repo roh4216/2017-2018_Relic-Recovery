@@ -35,7 +35,7 @@ public class blinkinTest extends OpMode {
     @Override
     public void loop() {
 
-        blinkin.setPosition(0.61);
+        blinkin.setPosition(0.7075);
 
     }
 

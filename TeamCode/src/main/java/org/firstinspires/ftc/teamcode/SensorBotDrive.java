@@ -1,13 +1,24 @@
 package org.firstinspires.ftc.teamcode;
 
+import android.graphics.Color;
+
+import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cColorSensor;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.AnalogInput;
+import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.DistanceSensor;
+import com.qualcomm.robotcore.hardware.I2cDevice;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
+
+import org.firstinspires.ftc.robotcontroller.external.samples.SensorREVColorDistance;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+
+import static com.sun.tools.doclint.Entity.and;
 
 @TeleOp(name="SensorBotDrive", group="OpMode")
 //@Disabled
@@ -30,6 +41,12 @@ public class SensorBotDrive extends OpMode {
     DcMotor br;
 
     Servo blinkin;
+
+    DistanceSensor longboi;
+
+    ColorSensor color;
+
+    boolean bLedOn = true;
 
     private AnalogInput ultra;
 
@@ -62,6 +79,8 @@ public class SensorBotDrive extends OpMode {
         ultra = hardwareMap.analogInput.get("ultra");
         flex = hardwareMap.analogInput.get("flex");
         squeeze = hardwareMap.analogInput.get("squeeze");
+        longboi = hardwareMap.get(DistanceSensor.class, "longboi");
+        color = hardwareMap.colorSensor.get("color");
 
         fl.setDirection(DcMotorSimple.Direction.REVERSE);
         br.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -70,6 +89,8 @@ public class SensorBotDrive extends OpMode {
         fr.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         bl.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         br.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+
 
         //lift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         //lift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -84,6 +105,18 @@ public class SensorBotDrive extends OpMode {
 
     @Override
     public void loop() {
+        float hsvValues[] = {0F,0F,0F};
+        color.enableLed(bLedOn);
+
+     /*   blinkin.setPosition(0.25);
+
+        if(runtime.seconds() > 5){
+            blinkin.setPosition(0.75);
+        }
+
+        if(runtime.seconds() > 10){
+            runtime.reset();
+        }*/
 
         rawvoltage = ultra.getVoltage();
 
@@ -97,16 +130,55 @@ public class SensorBotDrive extends OpMode {
 
         lightnum = flex.getVoltage();
 
-        if (lightnum >= 1.0){
-            blinkin.setPosition(0.93);
-        } else if (lightnum == 0) {
-            blinkin.setPosition(0.01);
+/*
+        if (lightnum >= 1.1) {
+            blinkin.setPosition(0.6525);
+        }
+        else if(lightnum <= 0.9){
+            blinkin.setPosition(0.7025);
         }
 
-        if (gamepad1.right_bumper && lightnum == 0) {
-            blinkin.setPosition(0.61);
+        */
+
+
+
+        //If the blue value is greater than 10, the red value, and the green value it will set blinkin to .7325 (Blue)
+        //Same for other 2
+
+        if (color.blue() > 10 && color.blue() > color.red() && color.blue() > color.green() ) {
+            blinkin.setPosition(0.7325);
         }
 
+        else if (color.red() > 10 && color.red() > color.blue() && color.red() > color.green() ) {
+            blinkin.setPosition(0.6675);
+        }
+
+         else if (color.green() > 10 && color.green() > color.red() && color.green() > color.blue() ){
+
+            blinkin.setPosition(0.7075);
+
+        }
+
+        //If none of the conditions above are met, it sets blinkin to 0.7475 which should be white but looks more purple
+
+        else{
+            blinkin.setPosition(0.7475);
+        }
+
+
+
+
+        Color.RGBToHSV(color.red() * 8, color.green() * 8, color.blue() * 8, hsvValues);
+
+        // send the info back to driver station using telemetry function.
+        telemetry.addData("LED", bLedOn ? "On" : "Off");
+        telemetry.addData("Clear", color.alpha());
+        telemetry.addData("Red  ", color.red());
+        telemetry.addData("Green", color.green());
+        telemetry.addData("Blue ", color.blue());
+        telemetry.addData("Hue", hsvValues[0]);
+
+        telemetry.addData("Time", runtime.seconds());
         telemetry.addData("Raw Voltage: ", rawvoltage);
         telemetry.addData("Inches: ", RI);
         telemetry.addData("Millimeters: ", RM);
@@ -115,7 +187,7 @@ public class SensorBotDrive extends OpMode {
 
         telemetry.addData("Pressure: ", squeeze.getVoltage());
 
-
+        telemetry.addData("longboi", longboi.getDistance(DistanceUnit.INCH));
 
 /*
         //fast mode
